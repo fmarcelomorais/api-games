@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>    
+    <title>Games</title>
+</head>
+<body>
+    <nav class="navbar navbar-dark bg-info">
+        <span class="navbar-brand mb-0 h1">Games</span>
+      </nav>
+        <div class="container  text-body">
+            <br>
+          <h4>LISTA DE GAMES</h4>
+          <table id="games" class="table table-striped table-ligth">
+            <thead>
+              <tr>
+                <th scope="col">Cod. Game</th>
+                <th scope="col">Titulo do Game</th>
+                <th scope="col">Ano do Game</th>
+                <th scope="col">Preço do Game</th>
+                <th scope="col">Ação</th>
+              </tr>
+            </thead> 
+            <tbody>
+
+            </tbody>           
+          </table>
+          <br>
+          <hr>
+          <h4>Cadastrar Jogos</h4>
+          <hr>
+          <div class="input-group">
+              <div class="input-group-prepend">
+                    <span class="input-group-text">Titulo do Game</span>
+                </div>
+            <input type="text" class="form-control" id="titulo" name="titulo" placeholder="Titulo do Jogo">
+          </div>
+          <br>
+          <div class="input-group">
+            <div class="input-group-prepend">
+                  <span class="input-group-text">Ano do Game</span>
+              </div>
+          <input type="number" class="form-control" id="ano" name="ano" placeholder="Ano do Jogo">
+        </div>
+        <br>
+        <div class="input-group">
+            <div class="input-group-prepend">
+                  <span class="input-group-text">Preço do Game R$</span>
+              </div>
+          <input type="number" class="form-control" id="preco" name="preco" placeholder="Preço do Jogo">
+        </div>
+        <br>
+        <button class="btn btn-success" onclick="criarJogo()">Cadastrar Jogo</button>
+        <br>
+        <hr>
+        <h4>Editar Jogos</h4>
+        <hr>
+        <div class="input-group">
+            <div class="input-group-prepend">
+                  <span class="input-group-text">Cód. do Game</span>
+              </div>
+          <input type="text" readonly class="form-control" id="id-edit" name="id-edit" placeholder="Codigo do Jogo">
+        </div>
+        <br>
+        <div class="input-group">
+            <div class="input-group-prepend">
+                  <span class="input-group-text">Titulo do Game</span>
+              </div>
+          <input type="text" class="form-control" id="titulo-edit" name="titulo-edit" placeholder="Titulo do Jogo">
+        </div>
+        <br>
+        <div class="input-group">
+          <div class="input-group-prepend">
+                <span class="input-group-text">Ano do Game</span>
+            </div>
+        <input type="number" class="form-control" id="ano-edit" name="ano-edit" placeholder="Ano do Jogo">
+      </div>
+      <br>
+      <div class="input-group">
+          <div class="input-group-prepend">
+                <span class="input-group-text">Preço do Game R$</span>
+            </div>
+        <input type="number" class="form-control" id="preco-edit" name="preco-edit" placeholder="Preço do Jogo">
+      </div>
+      <br>
+      <button class="btn btn-warning" onclick="editarJogo()">Editar Jogo</button>
+      <br>
+      <br><hr>
+      
+          
+
+
+</body>
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+<!-- AXIOS -->
+<script>
+    function criarJogo(){
+        
+        let campoTitulo = document.getElementById('titulo');
+        let campoAno = document.getElementById('ano');
+        let campoPreco = document.getElementById('preco');
+        
+        let game = {
+            titulo: campoTitulo.value,
+            ano: campoAno.value,
+            preco: campoPreco.value
+        }
+            axios.post('http://localhost:8081/game', game).then(resposta => {
+                if(resposta.status == 200){
+                    alert('Cadastrado com Sucesso!')
+                    setTimeout(()=>{
+                        window.location.reload();
+                    },1500)
+                    
+                }
+            }).catch((erro)=>{
+                console.log(erro)
+            })
+       
+    }
+
+    function excluirJogo(Listitem){
+        let id = Listitem.getAttribute("data-id");
+        axios.delete('http://localhost:8081/game/'+id).then(resposta =>{
+            alert("item deletado")
+        }).catch((erro)=>{
+            console.log(erro)
+        })
+    }
+
+    function carregarJogo(item){
+        //console.log(item)
+        let id = item.getAttribute('data-id')
+        let titulo = item.getAttribute('data-titulo')
+        let ano = item.getAttribute('data-ano')
+        let preco = item.getAttribute('data-preco')
+        let campoId = document.getElementById('id-edit')
+        let campoTitulo = document.getElementById('titulo-edit');
+        let campoAno = document.getElementById('ano-edit');
+        let campoPreco = document.getElementById('preco-edit');
+        campoId.value = id;
+        campoTitulo.value = titulo;
+        campoAno.value = ano;
+        campoPreco.value = preco;
+        
+    }
+
+    function editarJogo(){
+        let campoId = document.getElementById('id-edit')
+        let campoTitulo = document.getElementById('titulo-edit');
+        let campoAno = document.getElementById('ano-edit');
+        let campoPreco = document.getElementById('preco-edit');
+        
+        let game = {
+            titulo: campoTitulo.value,
+            ano: campoAno.value,
+            preco: campoPreco.value
+        }
+
+        let id = campoId.value;
+            axios.put('http://localhost:8081/game/'+id, game).then(resposta => {
+                if(resposta.status == 200){
+                    alert('Atualizado com Sucesso!')
+                    setTimeout(()=>{
+                        window.location.reload();
+                    },1500)
+                    
+                }
+            }).catch((erro)=>{
+                console.log(erro)
+            })
+    }
+
+    axios.get('http://localhost:8081/games').then((resposta)=>{
+        let games = resposta.data;
+        let lista = document.querySelector('#games');
+        
+        games.forEach(game => {
+            let elemento = document.createElement('tr')
+            elemento.setAttribute("data-id", game.id)
+            elemento.setAttribute("data-titulo", game.titulo)
+            elemento.setAttribute("data-ano", game.ano)
+            elemento.setAttribute("data-preco", game.preco)
+
+            elemento.innerHTML = `            
+                <th scope="row">${game.id}</th>
+                <td>${game.titulo}</td>
+                <td>${game.ano}</td>
+                <td>R$ ${game.preco}</td>                           
+             `
+            let botao = document.createElement('button')
+            botao.setAttribute("class","btn btn-danger")
+            botao.innerHTML = "Excluir"
+            botao.addEventListener("click", function(){excluirJogo(elemento)})
+
+            let botaoedit = document.createElement('button')
+            botaoedit.setAttribute("class","btn btn-warning")
+            botaoedit.setAttribute("style","margin-left: 10px")
+            botaoedit.innerHTML = "Alterar"
+            botaoedit.addEventListener("click", function(){carregarJogo(elemento)})
+            
+
+
+            let td = document.createElement('td')
+            td.appendChild(botao) 
+            td.appendChild(botaoedit)      
+            
+            elemento.appendChild(td)           
+            lista.appendChild(elemento)
+                
+            
+        });
+
+        console.log(games)
+    }).catch((error)=>{
+        console.log(error)
+    })
+
+    /* axios.put('/game/:id', (req, res)=>{
+
+    }) */
+
+    
+
+
+</script>
+<!-- AXIOS -->
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+</html>
